@@ -1,0 +1,94 @@
+﻿{% extends "base.html" %}
+{% block title %}BrainScan AI — History{% endblock %}
+
+{% block content %}
+<div class="history-page">
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <div>
+            <h1>Diagnostic <span style="background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;">Archive</span></h1>
+            <p style="color: var(--text-secondary);">Review past MRI analysis records</p>
+        </div>
+        {% if records %}
+        <form action="{{ url_for('clear_history') }}" method="POST" onsubmit="return confirm('Clear all history?')">
+            <button type="submit" class="glass-panel" style="background: rgba(239, 68, 68, 0.1); border-color: var(--danger-glow); color: var(--danger); padding: 10px 20px; cursor: pointer; border-radius: 8px; display: flex; align-items: center; gap: 8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                Clear Archive
+            </button>
+        </form>
+        {% endif %}
+    </div>
+
+    {% if records %}
+    <div class="glass-panel" style="padding: 20px; overflow-x: auto;">
+        <table class="history-table">
+            <thead>
+                <tr style="text-align: left; color: var(--text-muted); border-bottom: 1px solid var(--glass-border);">
+                    <th style="padding: 15px;">Scan</th>
+                    <th>Filename</th>
+                    <th>Timestamp</th>
+                    <th>Classification</th>
+                    <th>Confidence</th>
+                    <th>Visuals</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.02);">
+                    <td style="padding: 15px;">
+                        <img src="{{ url_for('static', filename='uploads/' + record.saved_as) }}" 
+                             style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 1px solid var(--glass-border);">
+                    </td>
+                    <td style="color: var(--text-primary); font-family: monospace;">{{ record.filename }}</td>
+                    <td style="color: var(--text-secondary); font-size: 0.9rem;">{{ record.timestamp }}</td>
+                    <td>
+                        <span class="badge-pill {% if record.predicted_class == 'Tumor' %}badge-danger{% else %}badge-success{% endif %}">
+                            {{ record.predicted_class }}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div style="flex: 1; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; width: 60px;">
+                                <div class="confidence-fill" data-width="{{ record.confidence }}"></div>
+                            </div>
+                            <span style="font-size: 0.85rem;">{{ record.confidence }}%</span>
+                        </div>
+                    </td>
+                    <td>
+                        {% if record.saved_as %}
+                        <a href="{{ url_for('static', filename='uploads/' + record.saved_as) }}" target="_blank" style="color: var(--accent); text-decoration: none; font-size: 0.9rem;">
+                            View
+                        </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="glass-panel" style="text-align: center; padding: 60px;">
+        <div style="margin-bottom: 20px; opacity: 0.3; color: var(--text-muted); display: flex; justify-content: center;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
+        </div>
+        <h3 style="margin-bottom: 10px;">Archive Empty</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 20px;">No MRI scans have been analyzed yet.</p>
+        <a href="{{ url_for('index') }}" class="btn-analyze" style="display: inline-block; width: auto; padding: 12px 30px; text-decoration: none;">
+            Analyze First Scan
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .badge-pill { padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+    .badge-danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+    .badge-success { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+    .confidence-fill { height: 100%; border-radius: 2px; background: var(--accent); }
+</style>
+
+<script>
+    document.querySelectorAll('.confidence-fill').forEach(el => {
+        el.style.width = el.dataset.width + '%';
+    });
+</script>
+{% endblock %}

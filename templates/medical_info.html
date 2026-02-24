@@ -1,0 +1,119 @@
+﻿{% extends "base.html" %}
+{% block title %}BrainScan AI - Medical Information{% endblock %}
+
+{% block content %}
+<div class="info-page">
+    <div class="page-header" style="text-align: center; margin-bottom: 40px;">
+        <h1 style="font-size: 2.5rem; margin-bottom: 15px;">Understanding <span style="background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;">Brain Tumors</span></h1>
+        <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto; font-size: 1.1rem;">
+            Comprehensive medical information regarding the types, symptoms, diagnosis, and treatments of brain tumors.
+        </p>
+    </div>
+
+    <!-- Section 1: Introduction -->
+    <div class="glass-panel" style="padding: 30px; margin-bottom: 30px; display: flex; gap: 30px; align-items: center; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 300px;">
+            <h2 style="color: var(--accent); margin-bottom: 15px; font-size: 1.8rem;">What is a Brain Tumor?</h2>
+            <p style="color: var(--text-secondary); line-height: 1.7; margin-bottom: 15px;">
+                A brain tumor is a mass or growth of abnormal cells in your brain. Many different types of brain tumors exist. Some brain tumors are noncancerous (benign), and some brain tumors are cancerous (malignant).
+            </p>
+            <p style="color: var(--text-secondary); line-height: 1.7;">
+                Brain tumors can begin in your brain (primary brain tumors), or cancer can begin in other parts of your body and spread to your brain (secondary, or metastatic, brain tumors). How quickly a brain tumor grows can vary greatly. The growth rate as well as the location of a brain tumor determines how it will affect the function of your nervous system.
+            </p>
+        </div>
+        <div style="flex: 1; min-width: 300px;">
+            <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&w=800&q=80" alt="Medical Brain Scan" style="width: 100%; border-radius: 12px; border: 1px solid var(--glass-border); box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+        </div>
+    </div>
+
+    <!-- Section 2: Types -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 30px;">
+        <div class="glass-panel" style="padding: 30px; border-top: 4px solid var(--success);">
+            <h3 style="color: var(--text-primary); margin-bottom: 15px; font-size: 1.4rem;">Benign Tumors</h3>
+            <p style="color: var(--text-secondary); line-height: 1.6;">
+                Benign brain tumors do not contain cancer cells. They usually grow slowly and have clear borders that do not spread into surrounding tissue. However, they can still press on sensitive areas of the brain and cause serious health problems. Common types include Meningiomas and Pituitary adenomas.
+            </p>
+        </div>
+        <div class="glass-panel" style="padding: 30px; border-top: 4px solid var(--danger);">
+            <h3 style="color: var(--text-primary); margin-bottom: 15px; font-size: 1.4rem;">Malignant Tumors</h3>
+            <p style="color: var(--text-secondary); line-height: 1.6;">
+                Malignant brain tumors contain cancer cells. They generally grow rapidly and invade surrounding healthy brain tissue. They can be life-threatening. Glioblastoma is the most common and aggressive type of primary malignant brain tumor in adults.
+            </p>
+        </div>
+    </div>
+
+    <!-- Section 3: Symptoms & Diagnosis -->
+    <div class="glass-panel" style="padding: 30px; margin-bottom: 30px;">
+        <h2 style="color: var(--accent); margin-bottom: 20px; font-size: 1.8rem; text-align: center;">Symptoms & Diagnosis</h2>
+        
+        <div style="display: flex; gap: 30px; flex-wrap: wrap-reverse;">
+            <div style="flex: 1; min-width: 300px;">
+                <img src="https://images.unsplash.com/photo-1530497610245-94d3c16cda28?auto=format&fit=crop&w=800&q=80" alt="Doctor analyzing scan" style="width: 100%; border-radius: 12px; border: 1px solid var(--glass-border); box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+            </div>
+            <div style="flex: 1; min-width: 300px;">
+                <h3 style="color: var(--text-primary); margin-bottom: 10px;">Common Symptoms</h3>
+                <ul style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 20px; padding-left: 20px;">
+                    <li>New onset or change in pattern of headaches</li>
+                    <li>Headaches that gradually become more frequent and more severe</li>
+                    <li>Unexplained nausea or vomiting</li>
+                    <li>Vision problems, such as blurred vision, double vision or loss of peripheral vision</li>
+                    <li>Gradual loss of sensation or movement in an arm or a leg</li>
+                    <li>Difficulty with balance or speech difficulties</li>
+                    <li>Confusion in everyday matters or personality/behavior changes</li>
+                    <li>Seizures, especially in someone who doesn't have a history of seizures</li>
+                </ul>
+
+                <h3 style="color: var(--text-primary); margin-bottom: 10px;">Diagnostic Methods</h3>
+                <p style="color: var(--text-secondary); line-height: 1.6;">
+                    Diagnosis typically involves a neurological exam followed by imaging tests. <strong>Magnetic Resonance Imaging (MRI)</strong> is the standard for evaluating brain tumors. Other tests may include CT scans, PET scans, and ultimately a biopsy to collect and test a sample of abnormal tissue.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 4: Treatment -->
+    <div class="glass-panel" style="padding: 30px; text-align: center;">
+        <h2 style="color: var(--accent); margin-bottom: 20px; font-size: 1.8rem;">Treatment Options</h2>
+        <p style="color: var(--text-secondary); line-height: 1.7; max-width: 800px; margin: 0 auto 30px;">
+            Treatment for a brain tumor depends on the type, size, and location of the tumor, as well as your overall health and your preferences.
+        </p>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+            <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid var(--glass-border);">
+                <div style="font-size: 2rem; margin-bottom: 10px; color: var(--accent);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                </div>
+                <h4 style="color: var(--text-primary); margin-bottom: 10px;">Surgery</h4>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">The goal is to remove as much of the tumor as safely possible without damaging healthy brain tissue.</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid var(--glass-border);">
+                <div style="font-size: 2rem; margin-bottom: 10px; color: var(--accent);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M12 7a5 5 0 0 0-5 5"/><path d="M12 17a5 5 0 0 0 5-5"/><path d="M17 12a5 5 0 0 0-5-5"/></svg>
+                </div>
+                <h4 style="color: var(--text-primary); margin-bottom: 10px;">Radiation Therapy</h4>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">Uses high-energy beams, such as X-rays or protons, to kill tumor cells. Often used after surgery.</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid var(--glass-border);">
+                <div style="font-size: 2rem; margin-bottom: 10px; color: var(--accent);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg>
+                </div>
+                <h4 style="color: var(--text-primary); margin-bottom: 10px;">Chemotherapy</h4>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">Uses drugs to kill tumor cells. Can be taken orally in pill form or injected into a vein.</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.02); padding: 20px; border-radius: 12px; border: 1px solid var(--glass-border);">
+                <div style="font-size: 2rem; margin-bottom: 10px; color: var(--accent);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                </div>
+                <h4 style="color: var(--text-primary); margin-bottom: 10px;">Targeted Therapy</h4>
+                <p style="color: var(--text-secondary); font-size: 0.9rem;">Focuses on specific abnormalities present within cancer cells to cause them to die.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div style="text-align: center; margin-top: 40px; margin-bottom: 20px;">
+        <p style="color: var(--text-muted); font-size: 0.85rem; max-width: 600px; margin: 0 auto;">
+            <em>Disclaimer: The information provided on this page is for educational purposes only and is not intended as a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.</em>
+        </p>
+    </div>
+</div>
+{% endblock %}

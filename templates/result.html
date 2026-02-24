@@ -1,0 +1,314 @@
+{% extends "base.html" %}
+{% block title %}BrainScan AI — Result{% endblock %}
+
+{% block content %}
+<div class="result-page">
+
+    <!-- Verdict Banner -->
+    <div class="verdict-banner glass-panel {% if result.predicted_class == 'Tumor' %}verdict-tumor{% else %}verdict-normal{% endif %}">
+        <div class="verdict-icon {% if result.predicted_class == 'Tumor' %}text-danger{% else %}text-success{% endif %}">
+            {% if result.predicted_class == 'Tumor' %}
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            {% else %}
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+            {% endif %}
+        </div>
+        <h2>
+            {% if result.predicted_class == 'Tumor' %}
+                Tumor Detected ({{ result.predicted_class }})
+            {% else %}
+                No Tumor Detected (Normal)
+            {% endif %}
+        </h2>
+        <p style="color: var(--text-secondary); margin-top: 8px;">
+            AI confidence level based on feature extraction
+        </p>
+    </div>
+
+    <div class="result-grid-spl">
+        
+        <!-- Left Column: Visuals -->
+        <div class="visuals-col">
+            <h3 style="margin-bottom: 20px; border-left: 4px solid var(--accent); padding-left: 12px;">Visual Analysis</h3>
+            
+            <div class="image-comparison">
+                <!-- Original Input -->
+                <div class="img-box">
+                    <div class="image-viewer" id="viewer-original">
+                        <img src="{{ url_for('static', filename='uploads/' + result.saved_as) }}" alt="Original Scan">
+                        <div class="viewer-controls">
+                            <button class="control-btn" onclick="viewers['viewer-original'].zoom(0.2)">+</button>
+                            <button class="control-btn" onclick="viewers['viewer-original'].zoom(-0.2)">−</button>
+                            <button class="control-btn" onclick="viewers['viewer-original'].rotate(90)">⟳</button>
+                            <button class="control-btn" onclick="viewers['viewer-original'].reset()">↺</button>
+                        </div>
+                    </div>
+                    <div class="img-caption">Original MRI</div>
+                </div>
+
+                <!-- Grad-CAM Output -->
+                {% if result.gradcam %}
+                <div class="img-box" style="border-color: var(--accent-glow);">
+                    <div class="image-viewer" id="viewer-gradcam">
+                        <img src="{{ url_for('static', filename='uploads/' + result.gradcam) }}" alt="Grad-CAM Heatmap">
+                        <div class="viewer-controls">
+                            <button class="control-btn" onclick="viewers['viewer-gradcam'].zoom(0.2)">+</button>
+                            <button class="control-btn" onclick="viewers['viewer-gradcam'].zoom(-0.2)">−</button>
+                            <button class="control-btn" onclick="viewers['viewer-gradcam'].rotate(90)">⟳</button>
+                            <button class="control-btn" onclick="viewers['viewer-gradcam'].reset()">↺</button>
+                        </div>
+                    </div>
+                    <div class="img-caption" style="color: var(--accent);">Grad-CAM Attention</div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="glass-panel" style="margin-top: 24px; padding: 20px;">
+                <h4 style="margin-bottom: 10px;">🔍 Interpretation</h4>
+                <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                    The <strong>Grad-CAM</strong> (Gradient-weighted Class Activation Mapping) heatmap highlights the regions of the MRI scan that most influenced the model's prediction. 
+                    {% if result.predicted_class == 'Tumor' %}
+                    Red/Yellow areas indicate high activation patterns consistent with tumor features.
+                    {% else %}
+                    The model focused on general structural features confirming a normal scan.
+                    {% endif %}
+                </p>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;">
+                    <em>Tip: Use mouse wheel to zoom into scans. Drag to pan.</em>
+                </p>
+            </div>
+        </div>
+
+        <!-- Right Column: Statistics -->
+        <div class="stats-col">
+            <h3 style="margin-bottom: 20px; border-left: 4px solid var(--secondary-accent); padding-left: 12px;">Diagnostic Metrics</h3>
+
+            <!-- Confidence Circle -->
+            <div class="glass-panel" style="padding: 30px; text-align: center; margin-bottom: 24px;">
+                <div class="confidence-ring-container">
+                    <svg width="150" height="150" viewBox="0 0 150 150">
+                        <circle cx="75" cy="75" r="60" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="10"></circle>
+                        <circle cx="75" cy="75" r="60" fill="none" stroke="var(--accent)" stroke-width="10"
+                                stroke-dasharray="377" stroke-dashoffset="{{ 377 - (377 * result.confidence / 100) }}"
+                                stroke-linecap="round" transform="rotate(-90 75 75)" style="transition: stroke-dashoffset 1.5s ease-out;"></circle>
+                    </svg>
+                    <div class="confidence-value">{{ result.confidence }}%</div>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--text-muted);">Model Confidence</p>
+            </div>
+
+            <!-- Probability Bars -->
+            <div class="prob-card">
+                <h4 style="margin-bottom: 20px;">Class Probabilities</h4>
+                
+                {% for label, score in result.probabilities.items() %}
+                <div class="prob-row">
+                    <div class="prob-header">
+                        <span>{{ label }}</span>
+                        <span style="font-weight: 700;">{{ score }}%</span>
+                    </div>
+                    <div class="prob-bar-track">
+                        <div class="prob-bar-fill {% if label == result.predicted_class %}high{% else %}low{% endif %}" 
+                             style="--width: {{ score }}%;"></div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--glass-border);">
+                    <div class="info-row" style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem;">
+                        <span style="color:var(--text-secondary);">Inference Time:</span>
+                        <span>{{ result.inference_time }}s</span>
+                    </div>
+                    <div class="info-row" style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                        <span style="color:var(--text-secondary);">Model Version:</span>
+                        <span>Deep CNN v2.1</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feedback Section -->
+            <div class="glass-panel" style="padding: 24px; margin-top: 24px; text-align: center;" id="feedback-panel">
+                <h4 style="margin-bottom: 12px; color: var(--text-primary);">Doctor Feedback</h4>
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 16px;">
+                    Is this diagnosis correct? Help us improve the model.
+                </p>
+                
+                <div id="feedback-buttons">
+                    <button onclick="sendFeedback('correct')" class="btn-feedback" style="background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        Correct
+                    </button>
+                    <button onclick="showCorrection()" class="btn-feedback" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        Incorrect
+                    </button>
+                </div>
+
+                <div id="correction-form" style="display: none; margin-top: 16px;">
+                    <p style="font-size: 0.9rem; margin-bottom: 8px;">What is the correct diagnosis?</p>
+                    <div style="display: flex; gap: 8px; justify-content: center;">
+                        <button onclick="sendFeedback('incorrect', 'Tumor')" class="btn-sm">Tumor</button>
+                        <button onclick="sendFeedback('incorrect', 'No Tumor')" class="btn-sm">No Tumor</button>
+                        <button onclick="sendFeedback('incorrect', 'Other')" class="btn-sm">Other</button>
+                    </div>
+                </div>
+
+                <div id="feedback-thanks" style="display: none; color: var(--success); margin-top: 10px;">
+                    Thank you for your feedback!
+                </div>
+            </div>
+
+            <style>
+                .text-danger { color: var(--danger); }
+                .text-success { color: var(--success); }
+                .btn-feedback {
+                    padding: 8px 16px;
+                    border-radius: 20px;
+                    cursor: pointer;
+                    font-weight: 600;
+                    margin: 0 4px;
+                    transition: all 0.2s;
+                }
+                .btn-feedback:hover { transform: scale(1.05); }
+                .btn-sm {
+                    padding: 6px 12px;
+                    border-radius: 6px;
+                    background: rgba(255,255,255,0.1);
+                    border: 1px solid var(--glass-border);
+                    color: var(--text-secondary);
+                    cursor: pointer;
+                }
+                .btn-sm:hover { background: var(--accent); color: #000; }
+            </style>
+
+            <div style="margin-top: 24px; display: grid; gap: 12px;">
+                <a href="{{ url_for('index') }}" class="btn-analyze" style="text-align: center; text-decoration: none;">
+                    New Diagnosis
+                </a>
+                <a href="{{ url_for('history') }}" class="btn-analyze" style="background: var(--glass-bg); border: 1px solid var(--glass-border); text-align: center; text-decoration: none;">
+                   View History
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const viewers = {};
+
+    class ImageViewer {
+        constructor(id) {
+            this.container = document.getElementById(id);
+            if (!this.container) return;
+            
+            this.img = this.container.querySelector('img');
+            this.scale = 1;
+            this.rotation = 0; // Added rotation state
+            this.panning = false;
+            this.pointX = 0;
+            this.pointY = 0;
+            this.startX = 0;
+            this.startY = 0;
+            
+            this.setupEvents();
+        }
+
+        setupEvents() {
+            // Mouse Wheel Zoom
+            this.container.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const delta = e.deltaY * -0.001;
+                const newScale = Math.min(Math.max(0.5, this.scale + delta), 4);
+                
+                this.zoom(newScale - this.scale);
+            });
+
+            // Drag to Pan
+            this.container.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                this.panning = true;
+                this.startX = e.clientX - this.pointX;
+                this.startY = e.clientY - this.pointY;
+                this.container.style.cursor = 'grabbing';
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!this.panning) return;
+                e.preventDefault();
+                this.pointX = e.clientX - this.startX;
+                this.pointY = e.clientY - this.startY;
+                this.updateTransform();
+            });
+
+            document.addEventListener('mouseup', () => {
+                this.panning = false;
+                this.container.style.cursor = 'grab';
+            });
+        }
+
+        zoom(amount) {
+            this.scale = Math.min(Math.max(0.5, this.scale + amount), 4);
+            this.updateTransform();
+        }
+
+        rotate(deg) {
+            this.rotation = (this.rotation + deg) % 360;
+            this.updateTransform();
+        }
+
+        reset() {
+            this.scale = 1;
+            this.rotation = 0;
+            this.pointX = 0;
+            this.pointY = 0;
+            this.updateTransform();
+        }
+
+        updateTransform() {
+            // ESCAPED template literals for JS to work correctly
+            this.img.style.transform = `translate(${this.pointX}px, ${this.pointY}px) rotate(${this.rotation}deg) scale(${this.scale})`;
+        }
+    }
+
+    // Initialize Viewers
+    document.addEventListener('DOMContentLoaded', () => {
+        if(document.getElementById('viewer-original')) {
+            viewers['viewer-original'] = new ImageViewer('viewer-original');
+        }
+        if(document.getElementById('viewer-gradcam')) {
+            viewers['viewer-gradcam'] = new ImageViewer('viewer-gradcam');
+        }
+    });
+
+    // Feedback functions
+    function showCorrection() {
+        document.getElementById('feedback-buttons').style.display = 'none';
+        document.getElementById('correction-form').style.display = 'block';
+    }
+
+    function sendFeedback(type, label = '') {
+        const payload = {
+            filename: '{{ result.saved_as }}',
+            feedback: type,
+            label: label || (type === 'correct' ? '{{ result.predicted_class }}' : '')
+        };
+
+        fetch('/feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === 'success') {
+                document.getElementById('feedback-buttons').style.display = 'none';
+                document.getElementById('correction-form').style.display = 'none';
+                document.getElementById('feedback-thanks').style.display = 'block';
+            }
+        });
+    }
+</script>
+{% endblock %}

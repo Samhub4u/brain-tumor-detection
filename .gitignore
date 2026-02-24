@@ -1,0 +1,36 @@
+# Virtual environment
+.venv310/
+.venv/
+env/
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Uploaded files (user data)
+static/uploads/*
+!static/uploads/.gitkeep
+
+# History data
+static/history.json
+
+# Logs
+*.log
+stdout.log
+stderr.log
+app_stdout.log
+app_stderr.log
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+
+# Environment
+.env

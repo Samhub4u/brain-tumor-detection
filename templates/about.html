@@ -1,0 +1,188 @@
+﻿{% extends "base.html" %}
+{% block title %}BrainScan AI — System Architecture{% endblock %}
+
+{% block content %}
+<div class="about-page">
+
+    <div class="hero-section" style="padding: 60px 0; text-align: center; position: relative;">
+        <!-- Floating Particles Decoration -->
+        <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; height: 100%; overflow: hidden; pointer-events: none; z-index: -1;">
+            <div class="pulse-circle" style="top: 20%; left: 20%; animation-delay: 0s;"></div>
+            <div class="pulse-circle" style="top: 70%; left: 80%; animation-delay: 2s;"></div>
+        </div>
+
+        <h1 style="font-size: 3.5rem; letter-spacing: -2px; margin-bottom: 20px;">
+            Neural <span class="text-gradient">Architecture</span>
+        </h1>
+        <p class="hero-subtitle" style="font-size: 1.2rem; max-width: 700px; margin: 0 auto; color: var(--text-secondary);">
+            Inside the "Black Box": A transparent breakdown of our <strong>Proprietary Deep Learning Pipeline</strong> for high-precision MRI diagnostics.
+        </p>
+    </div>
+
+    <div class="features-grid" style="margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px;">
+        
+        <!-- Methodology Card -->
+        <div class="glass-panel tilt-card" style="grid-column: 1 / -1; padding: 50px; position: relative; overflow: hidden;">
+            <div class="scanner-line" style="opacity: 0.3;"></div>
+            <div style="position: relative; z-index: 2;">
+                <h3 style="font-family: 'Orbitron'; font-size: 1.8rem; margin-bottom: 30px; border-left: 5px solid var(--accent); padding-left: 20px;">
+                    Dual-Phase Learning Protocol
+                </h3>
+                <p style="color: var(--text-secondary); margin-bottom: 40px; font-size: 1.1rem; line-height: 1.6;">
+                    We don't just train; we <em style="color: var(--accent);">adapt</em>. Our system utilizes a sophisticated Two-Stage Transfer Learning approach that leverages the massive feature-extraction power of ImageNet and fine-tunes it for the subtleties of neuroimaging.
+                </p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;">
+                    <!-- Phase 1 -->
+                    <div style="background: rgba(255,255,255,0.02); padding: 30px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); transition: transform 0.3s;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h4 style="margin: 0; font-size: 1.4rem;">Phase 1: Feature Extraction</h4>
+                            <span style="background: rgba(255,255,255,0.1); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem;">Frozen Base</span>
+                        </div>
+                        <p style="font-size: 0.95rem; color: var(--text-secondary);">
+                            The Convolutional Base (Deep CNN) is locked to preserve learned filters. We only train the custom top-level classifier to map general features to tumor classes.
+                        </p>
+                        <div style="margin-top: 20px; font-family: monospace; color: var(--success);">Result: 91.36% Accuracy</div>
+                    </div>
+                    
+                    <!-- Phase 2 -->
+                    <div style="background: rgba(56, 189, 248, 0.08); padding: 30px; border-radius: 16px; border: 1px solid var(--accent-glow); box-shadow: 0 0 30px rgba(56, 189, 248, 0.1);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h4 style="margin: 0; font-size: 1.4rem; color: var(--accent);">Phase 2: Fine-Tuning</h4>
+                            <span style="background: var(--accent); color: #000; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 700;">Active</span>
+                        </div>
+                        <p style="font-size: 0.95rem; color: var(--text-secondary);">
+                            We unfreeze the deepest <strong>20 Layers</strong> of the network. This allows the model to adjust its high-level abstract representations specifically for MRI textures.
+                        </p>
+                        <div style="margin-top: 20px; font-family: monospace; color: var(--accent); font-weight: 700;">Result: 98.39% Accuracy</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="glass-panel tilt-card" style="padding: 40px;">
+            <h3 style="margin-bottom: 25px; font-family: 'Orbitron'; display: flex; align-items: center; gap: 10px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                Benchmarks
+            </h3>
+            <table style="width: 100%; border-collapse: separate; border-spacing: 0 10px;">
+                <thead>
+                    <tr>
+                        <th style="text-align: left; color: var(--text-muted); padding-bottom: 10px;">Config</th>
+                        <th style="text-align: right; color: var(--text-muted); padding-bottom: 10px;">Accuracy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: rgba(255,255,255,0.02);">
+                        <td style="padding: 15px; border-radius: 8px 0 0 8px;">Baseline (Frozen)</td>
+                        <td style="padding: 15px; text-align: right; border-radius: 0 8px 8px 0; font-family: monospace;">91.36%</td>
+                    </tr>
+                     <tr style="background: rgba(255,255,255,0.02);">
+                        <td style="padding: 15px; border-radius: 8px 0 0 8px;">10-Layer Tuned</td>
+                        <td style="padding: 15px; text-align: right; border-radius: 0 8px 8px 0; font-family: monospace;">97.44%</td>
+                    </tr>
+                    <tr style="background: rgba(56, 189, 248, 0.15); border: 1px solid var(--accent);">
+                        <td style="padding: 15px; border-radius: 8px 0 0 8px; color: var(--accent); font-weight: 700;">20-Layer (Optimal)</td>
+                        <td style="padding: 15px; text-align: right; border-radius: 0 8px 8px 0; font-family: monospace; color: var(--accent); font-weight: 700;">98.39%</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="margin-top: 30px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <div class="tech-tag">Adam Optimizer</div>
+                <div class="tech-tag">LR: 1e-5</div>
+                <div class="tech-tag">Batch: 32</div>
+            </div>
+        </div>
+
+        <!-- Network Topology -->
+        <div class="glass-panel tilt-card" style="padding: 40px;">
+            <h3 style="margin-bottom: 25px; font-family: 'Orbitron'; display: flex; align-items: center; gap: 10px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                Topology
+            </h3>
+            
+            <div class="topology-stack" style="display: flex; flex-direction: column; gap: 12px; align-items: center;">
+                <div class="layer-block input-layer">Input (224 × 224 × 3)</div>
+                <div class="arrow"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg></div>
+                <div class="layer-block hidden-layer">Deep CNN Backbone</div>
+                <div class="arrow"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg></div>
+                <div class="layer-block processing-layer">Global Avg Pooling</div>
+                <div class="arrow"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg></div>
+                <div class="layer-block processing-layer">Dense 512 + ReLU</div>
+                <div class="arrow"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg></div>
+                <div class="layer-block output-layer">Softmax Output (4 Classes)</div>
+            </div>
+        </div>
+
+        <!-- Team / Credits -->
+        <div class="glass-panel" style="grid-column: 1 / -1; padding: 40px; text-align: center; margin-top: 20px;">
+            <h2 style="font-family: 'Orbitron'; margin-bottom: 10px;">Development Team</h2>
+            <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto 30px;">
+                Engineered for enterprise-grade medical imaging solutions.
+            </p>
+            <div style="display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;">
+                <div class="team-member">
+                    <div style="margin-bottom: 15px; color: var(--accent);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .554 0l2.223-1.482"/><path d="M7 16V4a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v12"/><path d="M2.5 21h19"/><path d="M4 21v-5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5"/><path d="m2 13 5.223 3.482a.5.5 0 0 1 .554 0L10 15"/></svg>
+                    </div>
+                    <div style="font-weight: 700;">Lead Developer</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">AI & Architecture</div>
+                </div>
+                <div class="team-member">
+                    <div style="margin-bottom: 15px; color: var(--accent);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                    </div>
+                    <div style="font-weight: 700;">Data Analyst</div>
+                    <div style="font-size: 0.9rem; color: var(--text-secondary);">Preprocessing & Validation</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .text-gradient { background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+    
+    .tech-tag {
+        padding: 8px 16px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid var(--glass-border);
+        border-radius: 20px;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+    }
+
+    .layer-block {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        text-align: center;
+        font-family: monospace;
+        font-size: 0.9rem;
+        transition: transform 0.2s;
+    }
+    .layer-block:hover { transform: scale(1.02); }
+
+    .input-layer { background: #0f172a; border: 1px solid var(--glass-border); color: var(--text-muted); }
+    .hidden-layer { background: rgba(56, 189, 248, 0.1); border: 1px solid var(--accent); color: var(--accent); font-weight: 700; height: 60px; display: flex; align-items: center; justify-content: center; }
+    .processing-layer { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); }
+    .output-layer { background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success); color: var(--success); }
+    .arrow { color: var(--text-muted); font-size: 0.8rem; }
+    
+    .team-member {
+        background: rgba(255,255,255,0.02);
+        padding: 20px 40px;
+        border-radius: 12px;
+        border: 1px solid var(--glass-border);
+        transition: transform 0.3s, background 0.3s;
+    }
+    .team-member:hover { 
+        transform: translateY(-5px);
+        background: rgba(255,255,255,0.05);
+        border-color: var(--accent);
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% block title %}BrainScan AI — Diagnosis{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <h1>
+        Advanced Neural <br>
+        <span style="background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;">Diagnosis System</span>
+    </h1>
+    <p class="hero-subtitle">
+        Leveraging <strong>Advanced Neural Networks</strong> for high-precision brain tumor classification 
+        from MRI scans.
+    </p>
+
+    {% if not model_loaded %}
+    <div class="glass-panel" style="max-width: 600px; margin: 30px auto; padding: 20px; border: 1px solid var(--danger);">
+        <h3 style="color: var(--danger); margin-bottom: 8px;">⚠️ Model Not Loaded</h3>
+        <p>Please place <code>model_20layers.best.h5</code> in the <code>webapp/model/</code> directory.</p>
+    </div>
+    {% endif %}
+</section>
+
+<div class="upload-section">
+    <form action="{{ url_for('predict_route') }}" method="POST" enctype="multipart/form-data" id="upload-form">
+        <input type="file" name="file" id="file-input" accept="image/*" hidden>
+        
+        <!-- Creative Holographic Drop Zone -->
+        <div class="holographic-dropzone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+            <div class="holo-grid"></div>
+            <div class="holo-border-corner top-left"></div>
+            <div class="holo-border-corner top-right"></div>
+            <div class="holo-border-corner bottom-left"></div>
+            <div class="holo-border-corner bottom-right"></div>
+            
+            <div class="scanner-line"></div>
+            
+            <div class="drop-content">
+                <div class="upload-icon-container">
+                    <div class="upload-icon-pulse"></div>
+                    <div class="upload-icon" style="color: var(--accent);">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                    </div>
+                </div>
+                <h3 class="glitch-text" data-text="INITIALIZE SCAN">INITIALIZE SCAN</h3>
+                <p>Drag MRI Sequence or Click to Upload</p>
+                <div class="file-types">DICOM • JPG • PNG</div>
+            </div>
+        </div>
+
+        <!-- Preview Area -->
+        <div id="preview-container" class="glass-panel" style="display:none; margin-top: 20px; padding: 15px; align-items: center; gap: 15px;">
+            <img id="preview-image" src="" style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover;">
+            <div style="flex:1;">
+                <h4 id="preview-name" style="font-size: 0.9rem;">filename.jpg</h4>
+                <p style="font-size: 0.8rem; color: var(--text-success);">Ready to analyze</p>
+            </div>
+            <button type="button" id="remove-btn" style="background:none; border:none; color: var(--text-muted); cursor: pointer; font-size: 1.2rem;">✕</button>
+        </div>
+
+        <button type="submit" class="btn-analyze" id="analyze-btn" disabled>
+            Start Diagnostic Analysis
+        </button>
+    </form>
+</div>
+
+<div class="features-grid">
+    <div class="feature-card tilt-card">
+        <div class="feature-icon" style="color: var(--accent);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+        </div>
+        <h3>High Precision</h3>
+        <p>Achieves 98.39% accuracy on validation sets using transfer learning.</p>
+    </div>
+    <div class="feature-card tilt-card">
+        <div class="feature-icon" style="color: var(--accent);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <h3>Explainable AI</h3>
+        <p>Includes Grad-CAM heatmaps to visualize tumor activation regions.</p>
+    </div>
+    <div class="feature-card tilt-card">
+        <div class="feature-icon" style="color: var(--accent);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <h3>Real-time</h3>
+        <p>Optimized inference pipeline for immediate clinical feedback.</p>
+    </div>
+</div>
+
+<script>
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const previewContainer = document.getElementById('preview-container');
+    const previewImage = document.getElementById('preview-image');
+    const previewName = document.getElementById('preview-name');
+    const analyzeBtn = document.getElementById('analyze-btn');
+    const removeBtn = document.getElementById('remove-btn');
+
+    // Drag & Drop
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('highlight');
+    });
+
+    dropZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('highlight');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('highlight');
+        
+        if (e.dataTransfer.files.length) {
+            fileInput.files = e.dataTransfer.files;
+            updatePreview();
+        }
+    });
+
+    fileInput.addEventListener('change', updatePreview);
+
+    function updatePreview() {
+        const file = fileInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImage.src = e.target.result;
+                previewName.textContent = file.name;
+                previewContainer.style.display = 'flex';
+                analyzeBtn.disabled = false;
+                
+                // Animate
+                previewContainer.style.animation = 'fadeIn 0.5s ease';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    removeBtn.addEventListener('click', () => {
+        fileInput.value = '';
+        previewContainer.style.display = 'none';
+        analyzeBtn.disabled = true;
+    });
+
+    // Submit Animation
+    document.getElementById('upload-form').addEventListener('submit', function() {
+        // Full screen loader
+        const loader = document.createElement('div');
+        loader.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 5, 17, 0.95); z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            backdrop-filter: blur(10px);
+        `;
+        loader.innerHTML = `
+            <div style="font-size: 4rem; animation: pulse-glow 1s infinite alternate;">🧠</div>
+            <h2 style="margin-top: 20px; font-family: 'Orbitron'; letter-spacing: 2px;">ANALYZING NEURAL PATTERNS</h2>
+            <div style="width: 300px; height: 4px; background: #333; margin-top: 20px; border-radius: 2px; overflow: hidden;">
+                <div style="width: 100%; height: 100%; background: var(--accent); animation: scan-line 2s infinite linear; transform: translateX(-100%);"></div>
+            </div>
+            <p style="color: var(--text-secondary); margin-top: 10px; font-size: 0.9rem;">Extracting ResNet50 Features...</p>
+        `;
+        document.body.appendChild(loader);
+        
+        // CSS for the progress bar animation
+        const style = document.createElement('style');
+        style.innerHTML = `@keyframes scan-line { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }`;
+        document.head.appendChild(style);
+    });
+</script>
+{% endblock %}
